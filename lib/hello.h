@@ -3,3 +3,4 @@
 
 void hello(char *name);
 void whisper(char *message);
+char* return_str(char *message);

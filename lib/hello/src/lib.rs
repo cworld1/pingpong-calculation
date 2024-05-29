@@ -1,10 +1,19 @@
 use std::ffi::CStr;
+use std::ffi::CString;
 
 #[no_mangle]
 pub extern "C" fn hello(name: *const libc::c_char) {
     let name_cstr = unsafe { CStr::from_ptr(name) };
     let name = name_cstr.to_str().unwrap();
     println!("Hello {}!", name);
+}
+
+#[no_mangle]
+pub extern "C" fn return_str(message: *const libc::c_char) -> *const libc::c_char {
+    let message_cstr = unsafe { CStr::from_ptr(message) };
+    let message = message_cstr.to_str().unwrap();
+
+    CString::new(message).unwrap().into_raw()
 }
 
 #[no_mangle]
@@ -18,13 +27,14 @@ pub extern "C" fn whisper(message: *const libc::c_char) {
 #[cfg(test)]
 pub mod test {
 
-    use std::ffi::CString;
     use super::*;
+    use std::ffi::CString;
 
     // This is meant to do the same stuff as the main function in the .go files
     #[test]
-    fn simulated_main_function () {
+    fn simulated_main_function() {
         hello(CString::new("world").unwrap().into_raw());
         whisper(CString::new("this is code from Rust").unwrap().into_raw());
+        whisper(return_str(CString::new("result").unwrap().into_raw()));
     }
 }
