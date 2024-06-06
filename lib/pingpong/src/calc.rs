@@ -24,11 +24,12 @@ pub fn calc() -> Result<(), Box<dyn Error>> {
     }
 
     // 迭代计算
-    iterative_calc(&states, &transition_matrix, &initial_vector, 4);
+    evaluate_strategy(&transition_matrix, &initial_vector, 4);
 
     Ok(())
 }
 
+// 读取 CSV 文件到二维数组
 fn read_csv_to_array2(filename: &str) -> Result<Array2<f64>, Box<dyn Error>> {
     let mut reader = ReaderBuilder::new().from_path(filename)?;
     let mut data = Vec::new();
@@ -43,23 +44,23 @@ fn read_csv_to_array2(filename: &str) -> Result<Array2<f64>, Box<dyn Error>> {
     Ok(Array2::from_shape_vec((rows, cols), data)?)
 }
 
-fn iterative_calc(
-    states: &[&str; 16],
+// 迭代计算
+fn evaluate_strategy(
     transition_matrix: &Array2<f64>,
     initial_vector: &Array1<f64>,
-    turn: usize,
+    num_steps: usize,
 ) {
     // 传入参数：
-    // 1. 定义状态名称
-    // 2. 定义状态转移矩阵
-    // 3. 初始状态向量
+    // 1. 定义状态转移矩阵
+    // 2. 初始状态向量
     let mut initial_vector = initial_vector.clone();
 
-    // 迭代计算
-    for _ in 0..turn {
-        // 迭代次数
+    if num_steps == 1 {
         initial_vector = initial_vector.dot(transition_matrix);
+    } else {
+        for _ in 0..num_steps {
+            initial_vector = initial_vector.dot(transition_matrix);
+        }
     }
-
-    println!("收敛状态：\n{:?}\n{:?}", states, initial_vector);
+    println!("Convergent state: \n{:?}", initial_vector);
 }
