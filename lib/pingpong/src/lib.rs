@@ -41,19 +41,6 @@ pub mod test {
 
     #[test]
     fn calc_main_function() -> Result<(), Box<dyn Error>> {
-        // 定义状态转移矩阵
-        let transition_matrix = calc::read_csv_to_array2("data/transition_matrix.csv")?;
-        // 转换为概率矩阵
-        let transition_matrix = transition_matrix.mapv(|x| x / 100.0);
-        // println!("Original matrix: {:?}", transition_matrix);
-
-        // 定义状态名称
-        let states = [
-            "S_1", "S_2", "SF_1", "SF_2", "LF_1", "LF_2", "SB_1", "SB_2", "LB_1", "LB_2", "CB_1",
-            "CB_2", "E/N_1", "E/N_2", "P_1", "P_2",
-        ];
-
-        calc::calc(&states, &transition_matrix); // 调用函数
-        Ok(())
+        calc::calc()
     }
 }
