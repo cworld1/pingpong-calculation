@@ -29,17 +29,17 @@ run-all: run-dynamic run-static
 
 .PHONY: build-dynamic
 build-dynamic:
-	@cd lib/hello && cargo build --release
-	@cp lib/hello/target/release/libhello.$(SO_EXT) lib/
+	@cd lib/pingpong && cargo build --release
+	@cp lib/pingpong/target/release/libpingpong.$(SO_EXT) lib/
 	@if [ "$(PLATFORM)" = "Windows" ]; then \
-		cp lib/hello/target/release/hello.dll build/ ; \
+		cp lib/pingpong/target/release/pingpong.dll build/ ; \
 	fi
 	go build -ldflags="-r $(ROOT_DIR)build/lib" -o build/ main_dynamic.go
 
 .PHONY: build-static
 build-static:
-	@cd lib/hello && cargo build --release
-	@cp lib/hello/target/release/libhello.a lib/
+	@cd lib/pingpong && cargo build --release
+	@cp lib/pingpong/target/release/libpingpong.a lib/
 	go build -o build/ main_static.go
 
 .PHONY: run-dynamic
@@ -53,8 +53,8 @@ run-static: build-static
 # This is just for running the Rust lib tests natively via cargo
 .PHONY: test-rust-lib
 test-rust-lib:
-	@cd lib/hello && cargo test -- --nocapture
+	@cd lib/pingpong && cargo test -- --nocapture
 
 .PHONY: clean
 clean:
-	rm -rf build/main_dynamic build/main_static lib/libhello.$(SO_EXT) lib/libhello.a lib/hello/target
+	rm -rf build/main_dynamic build/main_static lib/libpingpong.$(SO_EXT) lib/libpingpong.a lib/pingpong/target

@@ -4,12 +4,13 @@ package main
 // The -ldl is sometimes necessary to fix linker errors about `dlsym`.
 
 /*
-#cgo LDFLAGS: ./lib/libhello.a -ldl
-#include "./lib/hello.h"
+#cgo LDFLAGS: ./lib/libpingpong.a -ldl
+#include "./lib/pingpong.h"
 */
 import "C"
 
+// noinspection DuplicateDecl
 func main() {
-	C.hello(C.CString("world"))
+	C.pingpong(C.CString("world"))
 	C.whisper(C.CString("this is code from the static library"))
 }
