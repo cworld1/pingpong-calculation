@@ -46,13 +46,14 @@ pub mod test {
     pub fn calc_evaluate_strategy() -> Result<(), Box<dyn Error>> {
         let data = data::PingpongData::init("data/transition_matrix.csv")?;
 
-        // 示例应用，从对手的发球开始，例如 "S_2"
+        // Example initial vector, as the initial state is S_2,
+        // meaning the second player starts the game
         let mut initial_vector: Array1<f64> = Array1::zeros(data.states.len());
         if let Some(index) = data.states.iter().position(|s| s == "S_2") {
             initial_vector[index] = 1.0;
         }
 
-        // 迭代计算
+        // Evaluate the strategy
         calc::evaluate_strategy(&data.transition_matrix, &initial_vector, 4);
 
         Ok(())

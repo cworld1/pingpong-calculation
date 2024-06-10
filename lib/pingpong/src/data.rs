@@ -14,11 +14,11 @@ pub trait Init<T> {
 impl Init<&str> for PingpongData {
     fn init(file: &str) -> Result<PingpongData, Box<dyn Error>> {
         let transition_matrix = Self::read_csv_to_array2(file)?;
-        // 转换为概率矩阵
+        // Normalize the transition matrix
         let transition_matrix = transition_matrix.mapv(|x| x / 100.0);
         // println!("Original matrix: {:?}", transition_matrix);
 
-        // 定义状态名称
+        // Define the states
         let states = vec![
             "S_1", "S_2", "SF_1", "SF_2", "LF_1", "LF_2", "SB_1", "SB_2", "LB_1", "LB_2", "CB_1",
             "CB_2", "E/N_1", "E/N_2", "P_1", "P_2",
@@ -40,7 +40,7 @@ impl Init<()> for PingpongData {
 }
 
 impl PingpongData {
-    // 读取 CSV 文件到二维数组
+    // Read csv file to ndarray
     fn read_csv_to_array2(filename: &str) -> Result<Array2<f64>, Box<dyn Error>> {
         let mut reader = ReaderBuilder::new().from_path(filename)?;
         let mut data = Vec::new();

@@ -17,6 +17,7 @@ pub struct ActionScore {
     score: f64,
 }
 
+// Format the best action into a JSON string
 pub fn format_best_action(
     best_action: String,
     best_score: f64,
@@ -90,16 +91,16 @@ fn calculate_scenario_score(
     combined_score
 }
 
-// 迭代计算
+// Ecluation strategy
 #[no_mangle]
 pub fn evaluate_strategy(
     transition_matrix: &Array2<f64>,
     initial_vector: &Array1<f64>,
     num_steps: usize,
 ) {
-    // 传入参数：
-    // 1. 定义状态转移矩阵
-    // 2. 初始状态向量
+    // Parameters:
+    // 1. Define the transition matrix
+    // 2. Initial vector
     let mut initial_vector = initial_vector.clone();
 
     if num_steps == 1 {
