@@ -1,28 +1,27 @@
 use std::ffi::CStr;
 use std::ffi::CString;
+
+use data::Init;
 mod calc;
 mod data;
-
-#[no_mangle]
-pub extern "C" fn pingpong(name: *const libc::c_char) {
-    let name_cstr = unsafe { CStr::from_ptr(name) };
-    let name = name_cstr.to_str().unwrap();
-    println!("Hello {}!", name);
-}
-
-#[no_mangle]
-pub extern "C" fn return_str(message: *const libc::c_char) -> *const libc::c_char {
-    let message_cstr = unsafe { CStr::from_ptr(message) };
-    let message = message_cstr.to_str().unwrap();
-
-    CString::new(message).unwrap().into_raw()
-}
 
 #[no_mangle]
 pub extern "C" fn whisper(message: *const libc::c_char) {
     let message_cstr = unsafe { CStr::from_ptr(message) };
     let message = message_cstr.to_str().unwrap();
-    println!("({})", message);
+    println!("{}", message);
+}
+
+#[no_mangle]
+pub extern "C" fn get_best_action(action: *const libc::c_char) -> *const libc::c_char {
+    let action_cstr = unsafe { CStr::from_ptr(action) };
+    let action = action_cstr.to_str().unwrap();
+
+    let data = data::PingpongData::init("data/transition_matrix.csv").unwrap();
+    let result = calc::suggest_best_action(&data, action).unwrap();
+
+    // CString::new(result).unwrap().into_raw()
+    CString::new(format!("{:?}", result)).unwrap().into_raw()
 }
 
 // This is present so it's easy to test that the code works natively in Rust via `cargo test`
@@ -30,16 +29,14 @@ pub extern "C" fn whisper(message: *const libc::c_char) {
 pub mod test {
 
     use super::*;
-    use data::Init;
     use ndarray::Array1;
     use std::{error::Error, ffi::CString};
 
     // This is meant to do the same stuff as the main function in the .go files
     #[test]
     fn simulated_main_function() {
-        pingpong(CString::new("world").unwrap().into_raw());
-        whisper(CString::new("this is code from Rust").unwrap().into_raw());
-        whisper(return_str(CString::new("result").unwrap().into_raw()));
+        whisper(get_best_action(CString::new("SF_2").unwrap().into_raw()));
+        whisper(CString::new("(this is code from Rust)").unwrap().into_raw());
     }
 
     #[test]
@@ -55,15 +52,6 @@ pub mod test {
         // 迭代计算
         calc::evaluate_strategy(&data.transition_matrix, &initial_vector, 4);
 
-        Ok(())
-    }
-
-    #[test]
-    pub fn calc_best_action() -> Result<(), Box<dyn Error>> {
-        let data = data::PingpongData::init("data/transition_matrix.csv")?;
-        let action = "SB_2";
-        let result = calc::suggest_best_action(&data, action)?;
-        println!("Best action: {:?}", result);
         Ok(())
     }
 }

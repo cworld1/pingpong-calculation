@@ -3,4 +3,4 @@
 
 void pingpong(char *name);
 void whisper(char *message);
-char* return_str(char *message);
+char* get_best_action(char *message);

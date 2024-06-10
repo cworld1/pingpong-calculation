@@ -54,6 +54,7 @@ fn calculate_scenario_score(
 }
 
 // 迭代计算
+#[no_mangle]
 pub fn evaluate_strategy(
     transition_matrix: &Array2<f64>,
     initial_vector: &Array1<f64>,

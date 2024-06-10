@@ -10,9 +10,9 @@ import "C"
 import "fmt"
 
 func main() {
-	C.pingpong(C.CString("world"))
-	C.whisper(C.CString("this is code from the dynamic library"))
-
-	var result = C.GoString(C.return_str(C.CString("result")))
+	// C.pingpong(C.CString("world"))
+	var result = C.GoString(C.get_best_action(C.CString("SB_2")))
 	fmt.Println(result)
+	C.whisper(C.CString("(this is code from the dynamic library)"))
+
 }
