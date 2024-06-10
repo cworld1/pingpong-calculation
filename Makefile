@@ -35,14 +35,14 @@ build-dynamic:
 		cp lib/pingpong/target/release/pingpong.dll build/ ; \
 	fi
 	@export GOPATH=$(ROOT_DIR)
-	cd src && go build -o "$(ROOT_DIR)build/" -ldflags="-r $(ROOT_DIR)build/lib" ./cmd/main_dynamic
+	cd src && GOPATH=$(ROOT_DIR) go build -o "$(ROOT_DIR)build/" -ldflags="-r $(ROOT_DIR)build/lib" ./main_dynamic
 
 .PHONY: build-static
 build-static:
 	@cd lib/pingpong && cargo build --release
 	@cp lib/pingpong/target/release/libpingpong.a lib/
 	@export GOPATH=$(ROOT_DIR)
-	cd src && go build -o "$(ROOT_DIR)build/" ./cmd/main_static
+	cd src && go build -o "$(ROOT_DIR)build/" ./main_static
 
 .PHONY: run-dynamic
 run-dynamic: build-dynamic
