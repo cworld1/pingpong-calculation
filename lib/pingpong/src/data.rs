@@ -20,8 +20,8 @@ impl Init<&str> for PingpongData {
 
         // 定义状态名称
         let states = vec![
-            "s_1", "s_2", "sf_1", "sf_2", "lf_1", "lf_2", "sb_1", "sb_2", "lb_1", "lb_2", "cb_1",
-            "cb_2", "e/n_1", "e/n_2", "p_1", "p_2",
+            "S_1", "S_2", "SF_1", "SF_2", "LF_1", "LF_2", "SB_1", "SB_2", "LB_1", "LB_2", "CB_1",
+            "CB_2", "E/N_1", "E/N_2", "P_1", "P_2",
         ]
         .into_iter()
         .map(String::from)

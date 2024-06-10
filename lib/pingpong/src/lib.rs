@@ -30,6 +30,8 @@ pub extern "C" fn whisper(message: *const libc::c_char) {
 pub mod test {
 
     use super::*;
+    use data::Init;
+    use ndarray::Array1;
     use std::{error::Error, ffi::CString};
 
     // This is meant to do the same stuff as the main function in the .go files
@@ -41,7 +43,27 @@ pub mod test {
     }
 
     #[test]
-    fn calc_main_function() -> Result<(), Box<dyn Error>> {
-        calc::calc()
+    pub fn calc_evaluate_strategy() -> Result<(), Box<dyn Error>> {
+        let data = data::PingpongData::init("data/transition_matrix.csv")?;
+
+        // 示例应用，从对手的发球开始，例如 "S_2"
+        let mut initial_vector: Array1<f64> = Array1::zeros(data.states.len());
+        if let Some(index) = data.states.iter().position(|s| s == "S_2") {
+            initial_vector[index] = 1.0;
+        }
+
+        // 迭代计算
+        calc::evaluate_strategy(&data.transition_matrix, &initial_vector, 4);
+
+        Ok(())
+    }
+
+    #[test]
+    pub fn calc_best_action() -> Result<(), Box<dyn Error>> {
+        let data = data::PingpongData::init("data/transition_matrix.csv")?;
+        let action = "SB_2";
+        let result = calc::suggest_best_action(&data, action)?;
+        println!("Best action: {:?}", result);
+        Ok(())
     }
 }
