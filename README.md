@@ -2,6 +2,20 @@
 
 A calculation of pingpong play sport using go and rust.
 
+## Apis
+
+- `GET /ping`: Check the server status.
+
+  - Parameters: None
+  - Example: `GET /ping`
+  - Response: `message: "pong"`
+
+- `GET /best_action`: Get the probobility of next action result calculation of the given action.
+
+  - Parameters: `action` (string)
+  - Example: `GET /best_action?action=SB_2`
+  - Response: `message: { "best_action": "E/N_1", "best_score": 0.25, "action_scores": [...] }`
+
 ## Local Development
 
 Environment requirements:
