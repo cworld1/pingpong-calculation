@@ -19,9 +19,12 @@ pub extern "C" fn get_best_action(action: *const libc::c_char) -> *const libc::c
 
     let data = data::PingpongData::init("data/transition_matrix.csv").unwrap();
     let result = calc::suggest_best_action(&data, action).unwrap();
+    // println!("{:?}", result);
 
-    // CString::new(result).unwrap().into_raw()
-    CString::new(format!("{:?}", result)).unwrap().into_raw()
+    match calc::format_best_action(result.0, result.1, result.2) {
+        Ok(json_str) => CString::new(json_str).unwrap().into_raw(),
+        Err(e) => CString::new(format!("Error: {}", e)).unwrap().into_raw(),
+    }
 }
 
 // This is present so it's easy to test that the code works natively in Rust via `cargo test`

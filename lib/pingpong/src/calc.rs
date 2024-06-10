@@ -1,7 +1,44 @@
 extern crate ndarray;
 use crate::data::PingpongData;
 use ndarray::{s, Array1, Array2};
-use std::error::Error;
+use serde::Serialize;
+use std::error::Error; // Add this line to import the Serialize trait
+
+#[derive(Serialize)]
+pub struct SuggestedAction {
+    best_action: String,
+    best_score: f64,
+    action_scores: Vec<ActionScore>,
+}
+
+#[derive(Serialize)]
+pub struct ActionScore {
+    action: String,
+    score: f64,
+}
+
+pub fn format_best_action(
+    best_action: String,
+    best_score: f64,
+    action_scores: Vec<(String, f64)>,
+) -> Result<String, Box<dyn Error>> {
+    let action_scores_struct: Vec<ActionScore> = action_scores
+        .iter()
+        .map(|(a, s)| ActionScore {
+            action: a.clone(),
+            score: *s,
+        })
+        .collect();
+
+    let suggested_action = SuggestedAction {
+        best_action: best_action.clone(),
+        best_score,
+        action_scores: action_scores_struct,
+    };
+
+    let json_str = serde_json::to_string(&suggested_action)?;
+    Ok(json_str)
+}
 
 #[no_mangle]
 pub fn suggest_best_action(
