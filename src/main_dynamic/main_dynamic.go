@@ -9,6 +9,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,8 +29,17 @@ func start_server() {
 	})
 
 	r.GET("/best_action", func(c *gin.Context) {
-		// Get post params
+		// Get GET params
 		action := c.Query("action")
+
+		// Check if action parameter exists
+		if action == "" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Missing required parameter: action",
+			})
+			return
+		}
+
 		c.JSON(200, gin.H{
 			"message": best_action(action),
 		})
