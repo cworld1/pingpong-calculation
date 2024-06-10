@@ -1,6 +1,7 @@
 use std::ffi::CStr;
 use std::ffi::CString;
 mod calc;
+mod data;
 
 #[no_mangle]
 pub extern "C" fn pingpong(name: *const libc::c_char) {
