@@ -4,8 +4,8 @@ package main
 // The -ldl is sometimes necessary to fix linker errors about `dlsym`.
 
 /*
-#cgo LDFLAGS: ./lib/libpingpong.a -ldl
-#include "./lib/pingpong.h"
+#cgo LDFLAGS: ../../../lib/libpingpong.a -ldl
+#include "../../../lib/pingpong.h"
 */
 import "C"
 

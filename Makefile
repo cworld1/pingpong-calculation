@@ -1,6 +1,6 @@
 ROOT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-# Get the platform
+# Determine the platform
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	PLATFORM = Linux
@@ -34,13 +34,15 @@ build-dynamic:
 	@if [ "$(PLATFORM)" = "Windows" ]; then \
 		cp lib/pingpong/target/release/pingpong.dll build/ ; \
 	fi
-	go build -ldflags="-r $(ROOT_DIR)build/lib" -o build/ main_dynamic.go
+	@export GOPATH=$(ROOT_DIR)
+	cd src && go build -o "$(ROOT_DIR)build/" -ldflags="-r $(ROOT_DIR)build/lib" ./cmd/main_dynamic
 
 .PHONY: build-static
 build-static:
 	@cd lib/pingpong && cargo build --release
 	@cp lib/pingpong/target/release/libpingpong.a lib/
-	go build -o build/ main_static.go
+	@export GOPATH=$(ROOT_DIR)
+	cd src && go build -o "$(ROOT_DIR)build/" ./cmd/main_static
 
 .PHONY: run-dynamic
 run-dynamic: build-dynamic
