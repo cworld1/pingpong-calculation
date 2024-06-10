@@ -28,16 +28,18 @@ func start_server() {
 	})
 
 	r.GET("/best_action", func(c *gin.Context) {
+		// Get post params
+		action := c.Query("action")
 		c.JSON(200, gin.H{
-			"message": best_action(),
+			"message": best_action(action),
 		})
 	})
 
 	r.Run() // listen and serve on
 }
 
-func best_action() map[string]interface{} {
-	var result = C.GoString(C.get_best_action(C.CString("SB_2")))
+func best_action(action string) map[string]interface{} {
+	var result = C.GoString(C.get_best_action(C.CString(action)))
 	// fmt.Println(result)
 	var format_result map[string]interface{}
 	json.Unmarshal([]byte(result), &format_result)
