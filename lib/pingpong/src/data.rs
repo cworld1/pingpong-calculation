@@ -2,6 +2,7 @@ use csv::ReaderBuilder;
 use ndarray::Array2;
 use std::error::Error;
 
+#[derive(Debug)]
 pub struct PingpongData {
     pub transition_matrix: Array2<f64>,
     pub states: Vec<String>,
@@ -53,5 +54,8 @@ impl PingpongData {
         }
         let rows = data.len() / cols;
         Ok(Array2::from_shape_vec((rows, cols), data)?)
+    }
+    pub fn new() -> Self {
+        Self::init(()).unwrap()
     }
 }

@@ -2,6 +2,7 @@ use std::ffi::CStr;
 use std::ffi::CString;
 
 use data::Init;
+use data::PingpongData;
 mod calc;
 mod data;
 
@@ -17,9 +18,26 @@ pub extern "C" fn get_best_action(action: *const libc::c_char) -> *const libc::c
     let action_cstr = unsafe { CStr::from_ptr(action) };
     let action = action_cstr.to_str().unwrap();
 
-    let data = data::PingpongData::init("data/transition_matrix_lite.csv").unwrap();
+    // let data = data::PingpongData::init("data/transition_matrix_lite.csv").unwrap();
+    let mut data = PingpongData::new();
+    match data::PingpongData::init("data/transition_matrix_lite.csv") {
+        Ok(e) => {
+            // println!("Data loaded successfully: {:?}", e);
+            data = e;
+        }
+        Err(e) => {
+            println!("Error loading data: {:?}", e);
+        }
+    }
 
-    let result = calc::suggest_best_action(&data, action).unwrap();
+    // let result = calc::suggest_best_action(&data, action).unwrap();
+    let result = match calc::suggest_best_action(&data, action) {
+        Ok(result) => result,
+        Err(e) => {
+            println!("Error: {:?}", e);
+            (String::from(format!("Error: {:?}", e)), 0.0, vec![])
+        }
+    };
     // println!("{:?}", result);
 
     match calc::format_best_action(result.0, result.1, result.2) {
@@ -34,7 +52,7 @@ pub mod test {
 
     use super::*;
     use ndarray::Array1;
-    use std::{error::Error, ffi::CString};
+    use std::error::Error;
 
     fn whisper_rust() {
         whisper(CString::new("(this is code from Rust)").unwrap().into_raw());
@@ -52,7 +70,17 @@ pub mod test {
     pub fn calc_evaluate_strategy() -> Result<(), Box<dyn Error>> {
         whisper_rust();
 
-        let data = data::PingpongData::init("data/transition_matrix.csv")?;
+        // let data = data::PingpongData::init("data/transition_matrix.csv")?;
+        let mut data = PingpongData::new();
+        match data::PingpongData::init("data/transition_matrix_lite.csv") {
+            Ok(e) => {
+                // println!("Data loaded successfully: {:?}", e);
+                data = e;
+            }
+            Err(e) => {
+                println!("Error loading data: {:?}", e);
+            }
+        }
 
         // Example initial vector, as the initial state is S_2,
         // meaning the second player starts the game
