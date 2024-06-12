@@ -15,7 +15,7 @@ impl Init<&str> for PingpongData {
     fn init(file: &str) -> Result<PingpongData, Box<dyn Error>> {
         let transition_matrix = Self::read_csv_to_array2(file)?;
         // Normalize the transition matrix
-        let transition_matrix = transition_matrix.mapv(|x| x / 100.0);
+        // let transition_matrix = transition_matrix.mapv(|x| x / 100.0);
         // println!("Original matrix: {:?}", transition_matrix);
 
         // Define the states
