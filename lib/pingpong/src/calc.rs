@@ -53,8 +53,8 @@ pub fn suggest_best_action(
             let mut first_step_probs = data.transition_matrix.row(index_val).to_owned();
             first_step_probs = first_step_probs.slice_mut(s![..]).to_owned();
 
-            for (i, first_prob) in first_step_probs.iter().enumerate() {
-                if *first_prob > 0.0 && i < data.states.len() - 4 {
+            for (i, _first_prob) in first_step_probs.iter().enumerate() {
+                if i < data.states.len() - 4 {
                     // Add offset "i + 2" here when extracting "second_step_probs"
                     let second_step_probs = data.transition_matrix.row(i + 2);
                     let scenario_score = calculate_scenario_score(data, &second_step_probs);
