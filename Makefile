@@ -57,6 +57,10 @@ run-static: build-static
 test-rust-lib:
 	@cd lib/pingpong && cargo test -- --nocapture
 
+.PHONY: test-rust-main
+test-rust-main:
+	@cd lib/pingpong && cargo test -- --nocapture simulated_main_function
+
 .PHONY: clean
 clean:
 	rm -rf build/main_dynamic build/main_static lib/libpingpong.$(SO_EXT) lib/libpingpong.a lib/pingpong/target
