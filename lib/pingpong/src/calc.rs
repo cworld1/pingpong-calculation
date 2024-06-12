@@ -51,12 +51,19 @@ pub fn suggest_best_action(
         Some(index_val) => {
             let mut action_scores = vec![];
             let mut first_step_probs = data.transition_matrix.row(index_val).to_owned();
-            first_step_probs = first_step_probs.slice_mut(s![2..]).to_owned(); // skip first two rows
+            first_step_probs = first_step_probs.slice_mut(s![..]).to_owned();
 
-            for (i, _first_prob) in first_step_probs.iter().enumerate() {
-                let second_step_probs = data.transition_matrix.row(i);
-                let scenario_score = calculate_scenario_score(data, &second_step_probs);
-                action_scores.push((data.states[i + 2].clone(), scenario_score));
+            for (i, first_prob) in first_step_probs.iter().enumerate() {
+                if *first_prob > 0.0 && i < data.states.len() - 4 {
+                    // Add offset "i + 2" here when extracting "second_step_probs"
+                    let second_step_probs = data.transition_matrix.row(i + 2);
+                    let scenario_score = calculate_scenario_score(data, &second_step_probs);
+
+                    // skip conditions
+                    if data.states[i + 1] != "S_1" && data.states[i + 1] != "S_2" {
+                        action_scores.push((data.states[i + 2].clone(), scenario_score));
+                    }
+                }
             }
 
             let (best_action, best_score) = action_scores
